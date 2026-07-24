@@ -1,0 +1,35 @@
+# TODO 1: Give the workflow a name, e.g. "CI"
+name: CI
+
+# TODO 2: Set the trigger - run on push AND pull_request to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    # TODO 3: Choose a runner - use the latest Ubuntu hosted runner
+    runs-on: ubuntu-latest
+
+    steps:
+      # TODO 4: Check out the repository code using the official action
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # TODO 5: Set up Java 21 (Temurin distribution) with Maven cache
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # TODO 6: Build the project with Maven, skipping tests
+      - name: Build with Maven
+        run: mvn -B package -DskipTests
+
+      # TODO 7: Run the tests
+      - name: Run tests
+        run: mvn -B test
