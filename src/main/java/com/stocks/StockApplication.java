@@ -7,6 +7,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,11 +20,13 @@ public class StockApplication {
     }
 
     @Bean
+    @Profile("!test")
     ApplicationRunner seedData(StockService service) {
         return args -> {
             if (service.getAllStocks().isEmpty()) {
                 Stock hsbc = service.addStock(new Stock(null, "HSBA", "HSBC Holdings PLC", "Banking", "LSE"));
                 Stock bp   = service.addStock(new Stock(null, "BP",   "BP PLC",            "Energy",  "LSE"));
+
                 service.addPrice(new HistoricalPrice(null, hsbc.id(), LocalDate.of(2024, 6, 3),
                         bd("6.21"), bd("6.28"), bd("6.31"), bd("6.18"), 28_000_000L));
                 service.addPrice(new HistoricalPrice(null, hsbc.id(), LocalDate.of(2024, 6, 4),
@@ -37,5 +40,7 @@ public class StockApplication {
         };
     }
 
-    private static BigDecimal bd(String val) { return new BigDecimal(val); }
+    private static BigDecimal bd(String val) {
+        return new BigDecimal(val);
+    }
 }
